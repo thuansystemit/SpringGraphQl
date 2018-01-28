@@ -1,5 +1,6 @@
 package com.data.api.controller;
 
+import com.data.api.datafetcher.AddressDataFetcher;
 import com.data.api.datafetcher.AllPeopleDataFetcher;
 import com.data.api.datafetcher.PersonDataFetcher;
 import graphql.ExecutionResult;
@@ -32,15 +33,19 @@ public class QueryController {
 
   private GraphQL graphQL;
 
-  private final AllPeopleDataFetcher peopleDataFetcher;
+  private final AllPeopleDataFetcher allPeopleDataFetcher;
 
   private final PersonDataFetcher personDataFetcher;
 
-  public QueryController(final AllPeopleDataFetcher peopleDataFetcher,
-      PersonDataFetcher personDataFetcher
+  private final AddressDataFetcher addressDataFetcher;
+
+  public QueryController(final AllPeopleDataFetcher allPeopleDataFetcher,
+      PersonDataFetcher personDataFetcher,
+      AddressDataFetcher addressDataFetcher
       ){
-    this.peopleDataFetcher = peopleDataFetcher;
+    this.allPeopleDataFetcher = allPeopleDataFetcher;
     this.personDataFetcher = personDataFetcher;
+    this.addressDataFetcher = addressDataFetcher;
   }
 
   @PostConstruct
@@ -55,8 +60,9 @@ public class QueryController {
   public RuntimeWiring buildRuntimeWiring(){
     return newRuntimeWiring()
         .type("Query", typeWiring->typeWiring
-            .dataFetcher("allPeople", peopleDataFetcher)
+            .dataFetcher("allPeople", allPeopleDataFetcher)
             .dataFetcher("person", personDataFetcher))
+        .type("Person", typeWiring->typeWiring.dataFetcher("addresses", addressDataFetcher))
         .build();
   }
   @RequestMapping(value = "/query", method = RequestMethod.POST)

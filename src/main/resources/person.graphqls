@@ -11,5 +11,15 @@ type Person{
   id: String
   firstName: String
   lastName: String
-  age: Int
+  age: Int,
+  addresses: [Address]
+}
+
+type Address{
+  id: String
+  street: String
+  block: String
+  region: String
+  country: String
+  zip: String
 }
